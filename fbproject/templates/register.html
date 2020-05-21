@@ -19,17 +19,14 @@
 {% endwith %}
 
 
-
-
-
-
-
+<h3> {{event.name}} </h3>
 
 <div class="content-section">
 <form class="form-horizontal"  method="POST">
   <fieldset>
+    
     <legend>Register for a Great Time</legend>
-     {{form.hidden_tag()}}
+     {{form.csrf_token }}
       {{form.rollno.label(class = "form-control-label")}} 
       {{form.rollno(class="form-control form-control-lg")}}
       {{form.name.label(class = "form-control-label")}} 
@@ -46,13 +43,14 @@
       {{form.college(class = "form-control")}}
       {{form.branch.label(class = "form-control-label")}} 
       {{form.branch(class = "form-control")}}
-      {{form.section.label(class = "form-control-label")}} 
-      {{form.section(class="form-control form-control-lg")}}
-      {{form.gender.label(class = "form-control-label")}} 
-      {{form.gender(class="form-control form-control-lg")}}
+     
+      {{form.section}}
+       
+      {{form.gender}}
       
       
       <br>  {{form.submit(class = "btn btn-primary")}}
+      <a class="btn btn-primary-outline" href="{{url_for('home')}}">Cancel</a>
   </fieldset>
 </form>
 </div>

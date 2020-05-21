@@ -1,23 +1,20 @@
 from flask import *
-from flask_mysqldb import MySQL
-from forms import EventRegistration, LogInForm
+from forms import RegistrationForm, LogInForm, ForgotPasswordForm
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
-
-
+from flask_bcrypt import Bcrypt
 import os
 import csv
 
 app = Flask(__name__)
-
-
-app.secret_key = b"dnt tell" # 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-# app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'feedback'
-
+# app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:lucifer@123/feedback"
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
+app.config['SECRET_KEY'] = b"edkjfhiefkejbkfjb"
 db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+
+
 
 class Event(db.Model):
 	id = db.Column(db.Integer(), primary_key = True)
@@ -28,86 +25,50 @@ class Event(db.Model):
 	regopen = db.Column(db.DateTime())
 	regclose = db.Column(db.DateTime()) 
 	date = db.Column(db.DateTime()) 
+	def __str__(self):
+		return self.name
+
+class User(db.Model):
+	id = db.Column(db.Integer(), primary_key = True)
+	username=db.Column(db.String())
+	password=db.Column(db.String())
+	name = db.Column(db.String())
+
+	def __str__(self):
+		return self.username
 
 
-class User(db.Model)
-     username=db.Column(db.String())
-     password=db.column(db.String())
-
-
-class Registration(db.Model)
-     rollno=db.Column(db.Integer())
-     name=db.Column(db.String())
-     email=db.column(db.String())
-     eventname=db.Column(db.String())
-     coursename=db.Column(db.String())
-     phno=db.Column(db.String())
-     college=db.Column(db.String())
-     branch=db.Column(db.String())
-     section=db.Column(db.())
-     gender=db.Column(db.())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-all_events = [
-	{
-		"name" : "Event 1",
-		"desc" : "asdfgfrdsfdjbuivybekrbvkbz",
-		"status" : "Open"
-	},
-	{
-		"name" : "Event 2",
-		"desc" : "asdfgfrdsfdjbuivybekrbvkbz",
-		"status" : "Open"
-	},
-	{
-		"name" : "Event 3",
-		"desc" : "asdfgfrdsfdjbuivybekrbvkbz",
-		"status" : "Open"
-	}
-]
-
-
-
-
+class Registration(db.Model):
+	id = db.Column(db.Integer(), primary_key = True)
+	rollno=db.Column(db.Integer())
+	name=db.Column(db.String())
+	email=db.Column(db.String())
+	coursename=db.Column(db.String())
+	phno=db.Column(db.String())
+	college=db.Column(db.String())
+	branch=db.Column(db.String())
+	section=db.Column(db.String())
+	gender=db.Column(db.String())
+	event = db.Column(db.Integer(), db.ForeignKey("event.id"), nullable = False)
 
 
 
 @app.route("/")
 def home():
-	# all_events = Event.query.all()
+	all_events = Event.query.all()
 	return render_template("userhome.html", events = all_events)
-@app.route("/register",methods=['GET','POST'])
-def register():
-	form = EventRegistration()
-	return render_template("register.html", form= form, title = "Register")
+
+@app.route("/register/<int:id>/",methods=['GET','POST'])
+def register(id):
+	form = RegistrationForm()
+	event = Event.query.filter_by(id = id).first()
+	return render_template("register.html", form= form, title = "Register", event = event)
 
 @app.route("/about")
 def about():
      return render_template("about.html")
 
-@app.route("/login",methods=['GET','POST'])
+@app.route("/admin/login",methods=['GET','POST'])
 def login():
 	if request.method=="POST":
 	    uname=request.form['uname']
@@ -115,15 +76,19 @@ def login():
 	form = LogInForm()
 	return render_template("login.html", form = form)
 
+@app.route("/admin/forgotpassword")
+def forgotpassword():
+	form = ForgotPasswordForm()
+	return render_template("forgot pswd.html", form = form)
+
+
+
 @app.route("/admin/eventcreation",methods=['GET','POST'])
 def eventcreation():
     if request.method=="POST":
         eventname=request.form['eventname']
         courses=request.form.getlist('courses')
         courses=','.join(courses)
-        mycur=myconn.cursor()
-        mycur.execute("""insert into event(eventname,courses)values(%s,%s)""",(eventname,courses))
-        myconn.commit()
         flash("Registered successfully")
 
         return redirect(url_for('eventcreation'))
@@ -131,27 +96,20 @@ def eventcreation():
 
         return render_template("eventcreation.html")
 
-@app.route("/view",methods=['GET','POST'])
+@app.route("/admin/view",methods=['GET','POST'])
 def view():
-	
-	cur=myconn.cursor()
-	cur.execute("select * from event")
-	data=cur.fetchall()
 	return render_template("view.html",data=data)
 
-@app.route("/delete",methods=['GET','POST'])
+@app.route("/admin/delete",methods=['GET','POST'])
 def delete():
 	if request.method == "POST":
 		id=request.form['delete']
-		cur=myconn.cursor()
-		cur.execute("delete from event where sno=%s"%(id))
-		myconn.commit()
 		flash("Deleted Successfully")
 		return redirect(url_for('view'))
 
 
 
-@app.route("/edit",methods=['GET','POST'])
+@app.route("/admin/edit",methods=['GET','POST'])
 def edit():
 	if request.method == "POST":
 		id=request.form['edit']

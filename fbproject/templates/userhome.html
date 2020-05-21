@@ -4,6 +4,8 @@
 	{% for event in events %}
 	<div class="card">
 		<p class="card-title">{{event.name}}</p>
+		<a href="/register/{{event.id}}">Register</a>
 	</div>
+	
 	{% endfor%}
 {% endblock %} 
