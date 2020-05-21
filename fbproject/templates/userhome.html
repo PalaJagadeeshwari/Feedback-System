@@ -1,0 +1,9 @@
+{% extends "userpage.html" %}
+
+{% block content %}
+	{% for event in events %}
+	<div class="card">
+		<p class="card-title">{{event.name}}</p>
+	</div>
+	{% endfor%}
+{% endblock %} 

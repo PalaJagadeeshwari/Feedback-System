@@ -1,0 +1,19 @@
+type:
+create user table
+registration table
+
+
+forms:
+staff
+forgot password
+change password
+
+pages
+add staff
+view staff
+edit staff
+forgot password
+change password
+
+
+sss
