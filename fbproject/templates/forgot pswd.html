@@ -6,13 +6,10 @@
 <div class="content-section">
 <form class="form-horizontal"  method="POST">
   <fieldset>
-    <legend>Register for a Great Time</legend>
-     {{form.hidden_tag()}}
+    <legend>Enter email to Change the Password</legend>
+     {{form.csrf_token}}
       {{form.email.label(class = "form-control-label")}} 
-      {{form.email(class="form-control form-control-lg")}}
-      {{form.reset password.label(class = "form-control-label")}} 
-      {{form.reset password(class="form-control form-control-lg")}}
-      
+      {{form.email(class="form-control form-control-lg", placeholder = "asdf@dedd.com")}}
       <br>  {{form.submit(class = "btn btn-primary")}}
   </fieldset>
 </form>

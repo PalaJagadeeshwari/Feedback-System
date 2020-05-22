@@ -6,14 +6,14 @@
 <div class="content-section">
 <form class="form-horizontal"  method="POST">
   <fieldset>
-    <legend>Register for a Great Time</legend>
+    <legend>Change Password</legend>
      {{form.hidden_tag()}}
-      {{form.old password.label(class = "form-control-label")}} 
-      {{form.old password(class="form-control form-control-lg")}}
-      {{form.new password.label(class = "form-control-label")}} 
-      {{form.new password(class="form-control form-control-lg")}}
-      {{form.confirm password.label(class = "form-control-label")}} 
-      {{form.confirm password(class="form-control form-control-lg")}}
+      {{form.oldpassword.label(class = "form-control-label")}} 
+      {{form.oldpassword(class="form-control form-control-lg")}}
+      {{form.newpassword.label(class = "form-control-label")}} 
+      {{form.newpassword(class="form-control form-control-lg")}}
+      {{form.confirmpassword.label(class = "form-control-label")}} 
+      {{form.confirmpassword(class="form-control form-control-lg")}}
       
       <br>  {{form.submit(class = "btn btn-primary")}}
   </fieldset>
