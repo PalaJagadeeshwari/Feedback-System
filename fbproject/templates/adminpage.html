@@ -35,13 +35,14 @@
        <span class="icon-bar"></span>
        <span class="icon-bar"></span>
        </button>
-       <p class="navbar-brand" style = "color: #fff;">Project</p>
+       <a  href="/admin/" class="navbar-brand" style = "color: #fff;">Project</a>
     </div>
    <div class="collapse navbar-collapse" id="myNavbar">
      <ul class="nav navbar-nav">
-       <li><a href="{{url_for('login')}}" class = "nav-element" style = "color: #fff;">login</a></li>
-        <li><a href="{{url_for('eventcreation')}}" class = "nav-element" style = "color: #fff;">New event</a></li>
-       <li><a href="{{url_for('view')}}" class = "nav-element" style = "color: #fff;">view</a></li>               
+       
+        <li><a href="{{url_for('eventcreation')}}" class = "nav-element" style = "color: #fff;">Create an Event</a></li>
+       <li><a href="{{url_for('view')}}" class = "nav-element" style = "color: #fff;">View Events</a></li>
+       <li><a href="" style = "color: #fff;">View Registrations</a></li>
      </ul>
      
    </div>

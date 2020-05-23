@@ -32,19 +32,24 @@ class LogInForm(FlaskForm):
 
 class EventForm(FlaskForm):
 	eventname = StringField("Eventname", validators = [DataRequired()])
-	courses=["Python","Machine learning","Deep learning","Meansatck","Internet of Things"]
-	courses= BooleanField("Courses",choices=courses)
-	submit = SubmitField("EventForm")
+	course= StringField('Courses',validators = [DataRequired()], render_kw = {"placeholder" : "Example: Python, C, C++"})
+	poster = FileField("Please Add Poster for the Event",validators = [DataRequired()] )
+	regopen=DateField("Regopen",validators = [DataRequired()], render_kw = {"placeholder" : "dd/mm/yyyy"})
+	regclose=DateField("Regclose",validators = [DataRequired()], render_kw = {"placeholder" : "dd/mm/yyyy"})
+	description=TextAreaField("Description",validators = [DataRequired()])
+	place=TextField("Place",validators = [DataRequired()])
+	date=DateField("Date of Event",validators = [DataRequired()], render_kw = {"placeholder" : "dd/mm/yyyy"})
+	status = SelectField("Status", choices = [(0, "Not Open"), (1, "Registrations Open"), (2, "Registrations Closed")])
 
 class ForgotPasswordForm(FlaskForm):
 	email= StringField("Email", validators = [DataRequired(),Email()])
 	submit = SubmitField("Forgot Password")
 	
-class Staffhome(FlaskForm):
+class AddStaffForm(FlaskForm):
     name = StringField("Name", validators = [DataRequired()])
     email= StringField("Email", validators = [DataRequired()])
     password= PasswordField("Password",validators=[DataRequired()])
-    submit = SubmitField("Staffhome")
+    
 
 
 

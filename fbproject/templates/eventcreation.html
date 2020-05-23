@@ -14,53 +14,40 @@
   {% endif %}
 {% endwith %}
 
-<!--<form class="form-horizontal"  method="POST">
-
- <div class="form-group">
-   <label class="control-label col-sm-2" for="pwd">Event name:</label>
-   <div class="col-sm-6">
-     <input type="text" class="form-control" id="eventname" name="eventname" placeholder="Enter ur choice">
-   </div>
- </div>
- 
-
-    <div class="form-group">
-    <label class="control-label col-sm-2" for="pwd">Courses:</label>
-    <div class="col-sm-6">
-    <div class="radio_inline">
-        <label class="checkbox-inline"><input type="checkbox" name="courses" value="Python">Python</label>
-<label class="checkbox-inline"><input type="checkbox" name="courses" value="ML">ML</label>
-<label class="checkbox-inline"><input type="checkbox" name="courses" value="DL">DL</label>
-s
-<label class="checkbox-inline"><input type="checkbox" name="courses" value="Meanstack">Meanstack</label>
-<label class="checkbox-inline"><input type="checkbox" name="courses" value="WT">WT</label>
-    </div>
-    </div>
-  </div>
-
-<div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">Submit</button>
-    </div>
-  </div>
-  <input type="submit" class = "btn btn-primary">
-  <a href="/" class = "btn btn-primary">Cancel</a>
-</form>
-{% endblock %} -->
-
 
 <div class="content-section">
 <form class="form-horizontal"  method="POST">
   <fieldset>
-    <legend></legend>
-     {{form.hidden_tag()}}
+    <legend>Create an Event</legend>
+     {{form.csrf_token}}
       {{form.eventname.label(class = "form-control-label")}} 
       {{form.eventname(class="form-control form-control-lg")}}
-      {{form.courses.label(class = "form-control-label")}} 
-      {{form.courses(class="form-control form-control-lg")}}
-     
-      <br>  {{form.submit(class = "btn btn-primary")}}
-  </fieldset>
+      {{form.course.label(class = "form-control-label")}}
+      {{form.course(class = "form-control")}}
+      <small>(Please enter course names separated by a comma)</small>
+      <br>
+      {{form.regopen.label(class = "form-control-label")}} 
+      {{form.regopen(class="form-control form-control-lg")}}
+      {{form.regclose.label(class = "form-control-label")}} 
+      {{form.regclose(class="form-control ")}} 
+      {{form.place.label(class = "form-control-label")}} 
+      {{form.place(class="form-control form-control-lg")}}
+      {{form.date.label(class = "form-control-label")}} 
+      {{form.date(class="form-control form-control")}}
+      {{form.status.label(class = "form-control-label")}} 
+      {{form.status(class="form-control form-control")}}
+      
+      <div class="input-group">
+      <div class="input-group-prepend">
+        {{form.description.label(class = "input-group-text")}}
+      </div>
+        {{form.description(class="form-control form-control-lg")}}
+      </div>
+      {{form.poster.label(class = "form-control-label")}} {{form.poster}}
+      <small>Add jpeg or jpg files only.</small><br>
+      <input type="submit" value = "Add Event" class="btn btn-primary">
+      <a class="btn btn-primary-outlin">Cancel</a>
+    </fieldset>
 </form>
 </div>
 {% endblock %}
