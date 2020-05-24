@@ -55,6 +55,19 @@ class Registration(db.Model):
 	event = db.Column(db.Integer(), db.ForeignKey("event.id"), nullable = False)
 
 
+class Feedback(db.Model):
+	id = db.Column(db.Integer(), primary_key = True)
+	by=db.Column(db.String())
+	event=db.Column(db.Integer(),db.ForeignKey("event.id"), nullable = False)
+	message= db.Column(db.String())
+
+
+
+
+
+
+
+
 
 @app.route("/")
 def home():
