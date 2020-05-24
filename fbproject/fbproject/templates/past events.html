@@ -1,0 +1,29 @@
+{% extends 'userhome.html' %}
+{% block heading %} Registrations Closed: {% endblock %}
+{% block link %} {% endblock %}
+
+
+{% block aaa %}
+<fieldset>
+		<legend><h3>Events Completed: </h3></legend>
+		{% for event in completed_events %}
+		<div class="card ">
+  			<img class="card-img-top" src="https://qphs.fs.quoracdn.net/main-qimg-1cbf6a9f143c9f318d7713235401c323" alt="Card image cap">
+  			<div class="card-body">
+    			<h3 class="card-title">{{event.name}}</h3>
+    			<p class="card-text">{{event.description|truncate(30)}}</p>
+    			<p class="card-text"><label>Place: </label> {{event.place}}</p>
+	    		<p class="card-text"><label>Date of Event:</label> {{event.date.date()}}</p>	
+	    		<p class="card-text">
+	    			<small>Registraions Open:</small> {{event.regopen.date()}}
+	    		</p>
+	    		<p class="card-text">
+	    			<small>Registrations Closed:</small> {{event.regclose.date()}}
+	    		</p>
+    			<a href="/register/{{event.id}}" class="btn btn-primary">REGISTER</a>
+  			</div>
+		</div>
+		{% endfor%}
+	</fieldset>
+
+{% endblock %}

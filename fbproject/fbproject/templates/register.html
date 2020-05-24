@@ -1,0 +1,57 @@
+{% extends "userpage.html" %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+     
+    <script type="text/javascript">
+      var m={{ messages|safe }};
+      for(var i=0;i<m.length;i++)
+      {
+        alert(m[i]);
+      }
+    </script>
+    
+
+
+  {% endif %}
+{% endwith %}
+
+
+<h3> {{event.name}} </h3>
+
+<div class="content-section">
+<form class="form-horizontal"  method="POST">
+  <fieldset>
+    
+    <legend>Register for a Great Time</legend>
+     {{form.csrf_token }}
+      {{form.rollno.label(class = "form-control-label")}} 
+      {{form.rollno(class="form-control form-control-lg")}}
+      {{form.name.label(class = "form-control-label")}} 
+      {{form.name(class="form-control form-control-lg")}}
+      {{form.email.label(class = "form-control-label")}} 
+      {{form.email(class="form-control form-control-lg")}}
+      {{form.eventname.label(class = "form-control-label")}} 
+      {{form.eventname(class="form-control form-control-lg")}}
+      {{form.coursename.label(class = "form-control-label")}} 
+      {{form.coursename(class="form-control form-control-lg")}}
+      {{form.phno.label(class = "form-control-label")}} 
+      {{form.phno(class="form-control form-control-lg")}}
+      {{form.college.label(class = "form-control-label")}} 
+      {{form.college(class = "form-control")}}
+      {{form.branch.label(class = "form-control-label")}} 
+      {{form.branch(class = "form-control")}}
+     
+      {{form.section}}
+       
+      {{form.gender}}
+      
+      
+      <br>  {{form.submit(class = "btn btn-primary")}}
+      <a class="btn btn-primary-outline" href="{{url_for('home')}}">Cancel</a>
+  </fieldset>
+</form>
+</div>
+{% endblock %}
