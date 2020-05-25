@@ -16,7 +16,7 @@ def home():
 	all_events = Event.query.filter_by(status = 1).all()
 	return render_template("userhome.html", events = all_events)
 
-@app.route("/futureevennts")
+@app.route("/futureevents")
 def future_events():
 	events = Event.query.filter_by(status = 0).all()
 	return render_template('future events.html', events = events)
@@ -98,6 +98,13 @@ def forgotpassword():
 def admin_home():
 	return render_template("admin/admin home.html")
 
+@app.route("/admin/viewfeedback")
+def viewfeedback():
+	return render_template("events/view feedback.html")
+
+@app.route("/admin/viewregistration/")
+def viewregistration():
+	return render_template("events/view registrations.html")
 @app.route("/admin/changepassword", methods=["GET", "POST"])
 def change_password():
 	form = ChangePasswordForm()
@@ -167,3 +174,10 @@ def edit(id):
 def addstaff():
 	form = AddStaffForm()
 	return render_template("admin/add staff.html", form = form)
+
+@app.route("/admin/viewstaff/")
+def viewstaff():
+
+	return "hai";
+
+
