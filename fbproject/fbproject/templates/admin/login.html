@@ -1,5 +1,16 @@
 {% extends "userpage.html" %}
 {% block content %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+      <script type="text/javascript">
+      var m={{ messages|safe }};
+      for(var i=0;i<m.length;i++)
+      {
+        alert(m[i]);
+      }
+    </script>
+  {% endif %}
+  {% endwith %}
 <h1>Login  page</h1>
 <h4>This is strictly restricted for admins only</h4>
 <form   method="POST">

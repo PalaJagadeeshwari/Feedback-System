@@ -3,8 +3,8 @@ from wtforms import *
 from wtforms.validators import DataRequired, Length, Email
 	
 class EventForm(FlaskForm):
-	eventname = StringField("Eventname", validators = [DataRequired()])
-	course= StringField('Courses',validators = [DataRequired()], render_kw = {"placeholder" : "Example: Python, C, C++"})
+	name = StringField("Eventname", validators = [DataRequired()])
+	courses= StringField('Courses',validators = [DataRequired()], render_kw = {"placeholder" : "Example: Python, C, C++"})
 	poster = FileField("Please Add Poster for the Event",validators = [DataRequired()] )
 	regopen=DateField("Regopen",validators = [DataRequired()], render_kw = {"placeholder" : "dd/mm/yyyy"})
 	regclose=DateField("Regclose",validators = [DataRequired()], render_kw = {"placeholder" : "dd/mm/yyyy"})
@@ -57,15 +57,10 @@ class AddStaffForm(FlaskForm):
 
 
 
-class ChangePassword(FlaskForm):
+class ChangePasswordForm(FlaskForm):
     oldpassword=PasswordField("OldPassword",validators=[DataRequired()])
     newpassword=PasswordField("NewPassword",validators=[DataRequired()])
     confirmpassword=PasswordField("ConfirmPassword",validators=[DataRequired()])
-    submit = SubmitField("ChangePassword")
+    submit = SubmitField("Change Password")
 
 
-
-# class UserForm(ModelForm):
-#     class Meta:
-#         model = Event
-#         

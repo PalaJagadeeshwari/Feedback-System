@@ -3,9 +3,9 @@ from flask_login import UserMixin
 
 @login_manager.user_loader
 def load_user(user_id):
-	return Event.query.get(id = int(user_id))
+	return User.query.get(int(user_id))
 
-class Event(db.Model, UserMixin):
+class Event(db.Model):
 	id = db.Column(db.Integer(), primary_key = True)
 	name = db.Column(db.String())
 	courses = db.Column(db.String())
@@ -19,7 +19,7 @@ class Event(db.Model, UserMixin):
 	def __str__(self):
 		return self.name
 
-class User(db.Model):
+class User(db.Model, UserMixin):
 	id = db.Column(db.Integer(), primary_key = True)
 	username=db.Column(db.String())
 	password=db.Column(db.String())

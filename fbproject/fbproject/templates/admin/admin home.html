@@ -6,27 +6,135 @@
 		width: 100%;
 		height: 100vh;
 		display: flex;
-		justify-content: center;
+		justify-content: flex-start;
 		align-items: center;
+		flex-direction: column;
+		border: 2px solid black;
 	}
-	section div p {
-		font-size: 4rem;
-	}
-	section div div {
-		font-size: 2rem;
-		text-align: center;
-	}
+ .container1
+ {
+ 	width:80vw;
+ 	height:200px;
+ 	display: flex;
+ 	align-items: center;
+ 	justify-content: space-between;
+ 	margin:80px auto;
+ 	padding:0;
+ 	}
+
+ .container1 .box1{
+ 	list-style: none;
+ 	background: #eee;
+ 	height: 100%;
+ 	width: 43vw;
+ 	margin: 10px;
+ 	padding: 30px;
+ }
+
+.section-nav {
+	
+    display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 10vh;
+	width: 100%;
+	padding: 60px;
+}
+
+.section-nav ul {
+
+	width: 30vw;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+
+}
+
+section .table {
+    margin-top: 10vh;
+    display: flex;
+    /*align-items: center;*/
+    justify-content:   space-between;
+    /*flex-direction: column;*/
+}
+
+.table {
+    width: 50vw;
+    height: 200px;
+    display: flex;
+
+    align-items: center;
+    font-size: 1.5rem;
+}
+.table div {
+    flex-direction: row;
+}
 </style>
  <div class="jumbotron">
- <h4>Welcome To</h4>	
-<h1>Feedback System</h1>
+ 	<h4>Welcome To</h4>	
+	<h1>Feedback System</h1>
  </div>
-
+<ul class = "container1">
+	<div class="box1">
+	 	<h3 class = "card-title">Registrations</h3>
+		<li><a href="" class="card-link">View Registrations</a></li>
+    </div>
+    <div class="box1">
+        <h3 class = "card-title">Feedback</h3>
+        <li><a href="" class = "card-link">View feedback</a></li>
+    </div>
+</ul>
+</div>
 <section>
-
-	<div>
-		<p>Aditya Engineering College</p>
-		<div>Enlightens the Nescience</div>
-	</div>
+     <div class ="section-nav">
+     	<div >
+     		<h2>Events: </h2>
+     	</div>
+     	<ul>
+     		<li><a href="">Create Event</a></li>
+     		<li><a href="">View all Events</a></li>
+     	</ul>
+     </div>
+     <div class = "table">
+     	<div>
+     		<h2>Code heat</h2>
+     		<p>Python</p>
+     	</div>
+     	<div>
+     		<label>Update Status</label>
+     		<form>
+     			<select>
+     				<option>Registrations Closed</option>
+     				<option>Event Not Available</option>
+     			</select>
+     		</form>
+     	</div>
+        <!-- <div>
+            <h2>Code Agon</h2>
+            <p>Python</p>
+        </div>
+        <div>
+            <label>Update Status</label>
+            <form>
+                <select>
+                    <option>Registrations Closed</option>
+                    <option>Event Not Available</option>
+                </select>
+            </form>
+        </div>
+        <div>
+            <h2>Code Agon</h2>
+            <p>Python</p>
+        </div>
+        <div>
+            <label>Update Status</label>
+            <form>
+                <select>
+                    <option>Registrations Closed</option>
+                    <option>Event Not Available</option>
+                </select>
+            </form> -->
+        </div>
+     </div>
 </section>
 {% endblock %}

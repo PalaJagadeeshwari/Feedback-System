@@ -3,17 +3,17 @@ import csv
 
 from datetime import datetime
 from fbproject.forms import (RegistrationForm, LogInForm, ForgotPasswordForm,
-	EventForm, AddStaffForm, FeedbackForm)
+	EventForm, AddStaffForm, FeedbackForm, ChangePasswordForm)
 
 from flask import render_template, url_for, redirect, flash, request
-from fbproject import app, db
+from fbproject import app, db, bcrypt
 from fbproject.models import Event, Registration, Feedback, User
 
 from flask_login import login_user, current_user, logout_user
 
 @app.route("/")
 def home():
-	all_events = Event.query.all()
+	all_events = Event.query.filter_by(status = 1).all()
 	return render_template("userhome.html", events = all_events)
 
 @app.route("/futureevennts")
@@ -26,7 +26,7 @@ def future_events():
 @app.route("/pastevents/")
 def past_events():
 	events = Event.query.filter_by(status = 2)
-	completed_events = Event.query.filter_by(status = 2).all()
+	completed_events = Event.query.filter_by(status = 3).all()
 	return render_template('past events.html', events = events, completed_events = completed_events)
 
 @app.route("/<int:id>/submitfeedback/", methods = ['GET', 'POST'])
@@ -76,13 +76,13 @@ def register(id):
 def login():
 	form = LogInForm()
 	if form.validate_on_submit():
-		user = User.query.filter_by(username = username).first()
-		if user and bcrypt.check_hashed_password(user.password, form.password.data):
+		user = User.query.filter_by(username = form.username.data).first()
+		if user and bcrypt.check_password_hash(user.password, form.password.data):
 			login_user(user, remember = form.remember.data)
 			return redirect(url_for("admin_home"))
 		else:
 			flash("Invalid username or password")
-		return render_template("admin/login.html", form = form)
+	return render_template("admin/login.html", form = form)
 
 @app.route("/logout")
 def logout():
@@ -98,12 +98,30 @@ def forgotpassword():
 def admin_home():
 	return render_template("admin/admin home.html")
 
+@app.route("/admin/changepassword", methods=["GET", "POST"])
+def change_password():
+	form = ChangePasswordForm()
+	if form.validate_on_submit():
+		user = User.query.get(current_user.id)
+		if user and bcrypt.check_password_hash(user.password, form.oldpassword.data):
+			if form.newpassword.data == form.confirmpassword.data:
+				new_password = bcrypt.generate_password_hash(form.newpassword.data)
+				user.password = new_password.decode('utf-8')
+				db.session.commit()
+				flash("Passsword Changed Successfully")
+				return redirect(url_for("admin_home"))
+			else:
+				flash("Password Mismatch")
+		else:
+			flash("Wrong Current Password")
+	return render_template("admin/change pwd.html", form = form)
+
 @app.route("/admin/eventcreation",methods=['GET','POST'])
 def eventcreation():
 	form = EventForm()
 	if request.method=="POST":
-		eventname=request.form['eventname']
-		course=request.form['course']
+		eventname=request.form['name']
+		course=request.form['courses']
 		# poster=request.form['poster']
 		# print(poster)
 		d, m, y = list(map(int, request.form['regopen'].split("/")))
@@ -121,12 +139,12 @@ def eventcreation():
 		db.session.commit()
 		return redirect(url_for('eventcreation'))
 	else:
-		return render_template("event/eventcreation.html", form = form)
+		return render_template("events/eventcreation.html", form = form)
 
 @app.route("/admin/view",methods=['GET','POST'])
 def view():
 	events = Event.query.all()
-	return render_template("event/view.html", events = events)
+	return render_template("events/view.html", events = events)
 
 @app.route("/admin/delete",methods=['GET','POST'])
 def delete():
@@ -135,12 +153,15 @@ def delete():
 		flash("Deleted Successfully")
 		return redirect(url_for('view'))
 
-@app.route("/admin/edit",methods=['GET','POST'])
-def edit():
+@app.route("/admin/<int:id>/edit",methods=['GET','POST'])
+def edit(id):
+	event = Event.query.filter_by(id = id).first()
+	form = EventForm(obj = event)
 	if request.method == "POST":
 		id=request.form['edit']
+		flash("Edited")
 		return redirect(url_for("admin_home"))
-	return render_template("eventedit.html")
+	return render_template("events/eventedit.html", form = form)
 
 @app.route("/admin/addstaff/")
 def addstaff():

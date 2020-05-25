@@ -1,3 +1,48 @@
-{% extends 'userhome.html' %}
+{% extends 'userpage.html' %}
 
-{% block heading %} Events Upcoming: {% endblock %}
+
+
+{% block content %}
+<style type="text/css">
+	.card {
+		border: 1px solid black;
+		margin: 30px;
+		box-shadow: 0 0  30px #808080;
+		width: 30vw;
+	}
+	.card-img-top {
+		width: 100%;
+		height: auto;
+	}
+	.card-body {
+		padding: 40px;
+	}
+
+</style>
+	<div class="jumbotron">
+		<h1>Aditya Group of Colleges</h1>
+		<h4>A place for fun and Knowledge.</h4>
+	</div>
+	{% block aaa %} {% endblock%}
+	<fieldset>
+		<legend><h3>Events Upcoming:</h3></legend>
+		{% for event in events %}
+		<div class="card ">
+  			<img class="card-img-top" src="https://qphs.fs.quoracdn.net/main-qimg-1cbf6a9f143c9f318d7713235401c323" alt="Card image cap">
+  			<div class="card-body">
+    			<h3 class="card-title">{{event.name}}</h3>
+    			<p class="card-text">{{event.description|truncate(30)}}</p>
+    			<p class="card-text"><label>Place: </label> {{event.place}}</p>
+	    		<p class="card-text"><label>Date of Event:</label> {{event.date.date()}}</p>	
+	    		<p class="card-text">
+	    			<small>Registraions Open:</small> {{event.regopen.date()}}
+	    		</p>
+	    		<p class="card-text">
+	    			<small>Registrations Closed:</small> {{event.regclose.date()}}
+	    		</p>
+    		</div>
+		</div>
+		{% endfor%}
+	</fieldset>
+		
+{% endblock %}
