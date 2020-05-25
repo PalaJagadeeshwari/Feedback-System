@@ -1,0 +1,85 @@
+{% extends "adminpage.html" %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+     
+    <script type="text/javascript">
+      var m = {{ "messages|safe" }}
+      for(var i=0;i<m.length;i++)
+      {
+        alert(m[i]);
+
+      }
+    </script>
+    
+
+
+  {% endif %}
+{% endwith %}
+
+<style type="text/css">
+  #lastrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+  th#aaa {
+    text-align: center;
+  }
+</style>
+
+
+
+
+
+
+<table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Event Id</th>
+
+                <th>Event Name</th>
+                <th>Courses</th>
+                <th id="aaa">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td>{{event.id}}</td>
+                <td>{{event.name}}</td>
+                <td>{{event.courses}}</td>
+                
+                  <td id= "lastrow">
+                  <form action="{{url_for('edit')}}" method="POST">
+                  <button value={{event.id}} name="edit">Edit</button>
+                  </form>
+                  <form action="{{url_for('delete')}}" method="POST">
+                  <button value={{event.id}} name="delete">Delete</button>
+                  </form>
+                </td>
+
+
+            </tr>
+            {% endfor %}
+
+        </tbody>
+</table>
+
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+    $('#example').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+
+</script>
+
+{% endblock %}

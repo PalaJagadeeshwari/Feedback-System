@@ -1,0 +1,22 @@
+{% extends "userpage.html" %}
+
+{% block content %}
+
+
+<div class="content-section">
+<form class="form-horizontal"  method="POST">
+  <fieldset>
+    <legend>Change Password</legend>
+     {{form.hidden_tag()}}
+      {{form.oldpassword.label(class = "form-control-label")}} 
+      {{form.oldpassword(class="form-control form-control-lg")}}
+      {{form.newpassword.label(class = "form-control-label")}} 
+      {{form.newpassword(class="form-control form-control-lg")}}
+      {{form.confirmpassword.label(class = "form-control-label")}} 
+      {{form.confirmpassword(class="form-control form-control-lg")}}
+      
+      <br>  {{form.submit(class = "btn btn-primary")}}
+  </fieldset>
+</form>
+</div>
+{% endblock %}
