@@ -100,11 +100,13 @@ def admin_home():
 
 @app.route("/admin/viewfeedback")
 def viewfeedback():
-	return render_template("events/view feedback.html")
+	feedbacks_list = Feedback.query.all()
+	return render_template("events/view feedback.html", feedbacks = feedbacks_list)
 
 @app.route("/admin/viewregistration/")
 def viewregistration():
-	return render_template("events/view registrations.html")
+	registrations = Registration.query.all()
+	return render_template("events/view registrations.html", registrations = registrations)
 @app.route("/admin/changepassword", methods=["GET", "POST"])
 def change_password():
 	form = ChangePasswordForm()
@@ -132,13 +134,13 @@ def eventcreation():
 		# poster=request.form['poster']
 		# print(poster)
 		d, m, y = list(map(int, request.form['regopen'].split("/")))
-		regopen = datetime(y, m, d)
+		regopen = datetime(y, m, d).strftime("%Y/%m/%d")
 		d, m, y = list(map(int, request.form['regclose'].split("/")))
-		regclose = datetime(y,m,d)
+		regclose = datetime(y,m,d).strftime("%Y/%m/%d")
 		description=request.form['description']
 		place=request.form['place']
 		d, m, y = list(map(int, request.form['date'].split("/")))
-		date = datetime(y,m,d)
+		date = datetime(y,m,d).strftime("%Y/%m/%d")
 		status = request.form['status']
 		print(status)
 		event = Event(name = eventname, courses = course, regopen = regopen, description = description, regclose = regclose, place = place, date = date, status = status)
@@ -153,21 +155,17 @@ def view():
 	events = Event.query.all()
 	return render_template("events/view.html", events = events)
 
-@app.route("/admin/delete",methods=['GET','POST'])
-def delete():
-	if request.method == "POST":
-		id=request.form['delete']
-		flash("Deleted Successfully")
-		return redirect(url_for('view'))
+@app.route("/admin/<int:id>/delete",methods=['GET','POST'])
+def delete(id):
+	Event.query.filter_by(id = id).delete()
+	db.session.commit()
+	flash("Deleted Successfully")
+	return redirect(url_for('view'))
 
 @app.route("/admin/<int:id>/edit",methods=['GET','POST'])
 def edit(id):
 	event = Event.query.filter_by(id = id).first()
 	form = EventForm(obj = event)
-	if request.method == "POST":
-		id=request.form['edit']
-		flash("Edited")
-		return redirect(url_for("admin_home"))
 	return render_template("events/eventedit.html", form = form)
 
 @app.route("/admin/addstaff/")
@@ -177,7 +175,7 @@ def addstaff():
 
 @app.route("/admin/viewstaff/")
 def viewstaff():
-
-	return "hai";
+	staff = User.query.all()
+	return render_template("admin/viewstaff.html", staff = staff)
 
 
