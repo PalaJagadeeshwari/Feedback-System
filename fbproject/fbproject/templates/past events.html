@@ -9,7 +9,10 @@
 		height: 100vh;
 		margin-bottom: 150px;
 		padding: 30px;
-		/*border : 2px solid black;*/
+	}
+	.card {
+		box-shadow: 0 0 15px #eee;
+		width: 600px;
 	}
 </style>
 <fieldset>
@@ -28,7 +31,7 @@
 	    		<p class="card-text">
 	    			<small>Registrations Closed:</small> {{event.regclose.date()}}
 	    		</p>
-	    			<a href="/{{event.id}}/submitfeedback/">Submit Feedback</a>
+	    			<a href="/{{event.id}}/submitfeedback/" class = "btn btn-primary">Submit Feedback</a>
   			</div>
 		</div>
 		{% endfor%}

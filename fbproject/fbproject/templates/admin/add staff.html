@@ -12,7 +12,8 @@
     
     <legend>Add Details</legend>
      {{form.csrf_token }}
-      
+      {{form.username.label(class = "form-control-label")}} 
+      {{form.username(class="form-control form-control-lg")}}
       {{form.name.label(class = "form-control-label")}} 
       {{form.name(class="form-control form-control-lg")}}
       {{form.email.label(class = "form-control-label")}} 

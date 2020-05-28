@@ -1,15 +1,17 @@
 import os
 import csv
-
 from datetime import datetime
-from fbproject.forms import (RegistrationForm, LogInForm, ForgotPasswordForm,
-	EventForm, AddStaffForm, FeedbackForm, ChangePasswordForm)
-
+from fbproject.forms import (RegistrationForm, LogInForm, RequestResetForm,
+	EventForm, AddStaffForm, FeedbackForm, ChangePasswordForm,ResetPasswordForm)
 from flask import render_template, url_for, redirect, flash, request
-from fbproject import app, db, bcrypt
-from fbproject.models import Event, Registration, Feedback, User
-
+from fbproject import app,db,bcrypt,mail
+from fbproject.models import (Event, Registration, Feedback, User)
 from flask_login import login_user, current_user, logout_user
+from flask_mail import Mail,Message
+
+
+
+
 
 @app.route("/")
 def home():
@@ -63,7 +65,7 @@ def register(id):
 		branch=request.form['branch']
 		section=request.form['section']
 		gender=request.form['gender']
-		registration = Registration(event = event.id, rollno = rollno, coursename = coursename, gender = gender, phno = phno, college = college, branch = branch, section = section)
+		registration = Registration(event = event.id, rollno = rollno, coursename = coursename, gender = gender, phno = phno, college = college, branch = branch, section = section)		
 		db.session.add(registration)
 		db.session.commit()
 		return redirect("url_for('home')")
@@ -89,10 +91,6 @@ def logout():
 	logout_user()
 	return redirect(url_for('home'))
 
-@app.route("/admin/forgotpassword")
-def forgotpassword():
-	form = ForgotPasswordForm()
-	return render_template("admin/forgot pswd.html", form = form)
 
 @app.route("/admin/")
 def admin_home():
@@ -162,22 +160,89 @@ def delete():
 
 @app.route("/admin/<int:id>/edit",methods=['GET','POST'])
 def edit(id):
+	
+	   
 	event = Event.query.filter_by(id = id).first()
 	form = EventForm(obj = event)
 	if request.method == "POST":
-		id=request.form['edit']
-		flash("Edited")
-		return redirect(url_for("admin_home"))
+	    event.name=request.form['name']
+	    event.courses=request.form['courses']
+	    y, m, d = list(map(int, request.form['regopen'].split("-")))
+	    event.regopen = datetime(y, m, d)
+	    y, m, d= list(map(int, request.form['regclose'].split("-")))
+	    event.regclose = datetime(y,m,d)
+	    y,m,d = list(map(int, request.form['date'].split("-")))
+	    event.date = datetime(y,m,d)
+	    event.description=request.form['description']
+	    event.place=request.form['place']
+	    event.status=request.form['status']
+	    db.session.commit()
+	    flash("Edited")
+	    return redirect(url_for("admin_home"))
 	return render_template("events/eventedit.html", form = form)
 
-@app.route("/admin/addstaff/")
+@app.route("/admin/addstaff/",methods=['GET','POST'])
 def addstaff():
 	form = AddStaffForm()
+	if request.method=="POST":
+		username=request.form['username']
+		name=request.form['name']
+		email=request.form['email']
+		password=bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
+		u=User(name=name,email=email,password=password)
+		db.session.add(u)
+		db.session.commit()
 	return render_template("admin/add staff.html", form = form)
 
 @app.route("/admin/viewstaff/")
 def viewstaff():
+	
 
-	return "hai";
+	return render_template("admin/viewstaff.html")
+
+def send_reset_email(user):
+    token=user.get_reset_token()
+    msg=Message('Password Reset Request',sender="noreply@demo.com",recipients=[user.email])
+    a = url_for("reset_token", token=token, external=True)
+    msg.body=f'''To Reset Your Password ,visit the following link:
+    {a}
+    If u did not make this request simply ignore this mail and no chnage swill be made'''
+    mail.send(msg)
 
 
+@app.route("/reset_password",methods=['GET','POST'])
+def reset_request():
+	if current_user.is_authenticated:
+		return redirect(url_for('adminhome'))
+	form = RequestResetForm()
+	if request.method == "POST":
+		print(form.email.data)
+		user = User.query.filter_by(email = form.email.data).first()
+		if user is None:
+			flash("No Such User Exists")
+ 			# print("qasas")
+		send_reset_email(user)
+ 		# print("asasasasas")
+		flash('An email has sent with an instructions to reset your password','info')
+		return render_template('admin/reset_request.html',form=form)
+	return render_template("admin/reset_request.html", form = form)
+ 	
+
+@app.route("/reset_password/<token>",methods=['GET', 'POST'])
+def reset_token(token):
+	if current_user.is_authenticated:
+ 		return render_template('adminhome.html')
+	user = User.verify_reset_token(token)
+	if user is None:
+		flash("invalid or expired token",'warning')
+		return redirect(url_for('reset_request'))
+	if form.validate_on_submit():
+	    hashed_password=bcrypt.generate_password_hash( form.password.data).decode(utf-8)
+	    user.password=hashed_password
+	    db.session.commit()	
+	    flash('your password has been updated now you are able to login')
+	    return redirect(url_for('login'))
+	form=ResetPasswordForm()
+	return render_template('reset_token.html',title='Reset Password',form=form)
+
+		

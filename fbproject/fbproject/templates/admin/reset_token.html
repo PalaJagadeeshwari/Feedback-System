@@ -1,0 +1,33 @@
+{% extends "userpage.html" %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+      <script type="text/javascript">
+      var m={{ messages|safe }};
+      for(var i=0;i<m.length;i++)
+      {
+        alert(m[i]);
+      }
+    </script>
+    
+
+
+  {% endif %}
+{% endwith %}
+<div class="content-section">
+<form class="form-horizontal"  method="POST">
+  <fieldset>
+    <legend>Enter email to Change the Password</legend>
+     {{form.csrf_token}}
+      
+      {{form.password.label(class = "form-control-label")}} 
+      {{form.password(class="form-control form-control-lg", placeholder = "asdf@dedd.com")}}
+      {{form.confirmpassword.label(class = "form-control-label")}} 
+      {{form.confirmpassword(class="form-control form-control-lg", placeholder = "asdf@dedd.com")}}
+      <br>  {{form.submit(class = "btn btn-primary")}}
+  </fieldset>
+</form>
+</div>
+{% endblock %}

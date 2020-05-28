@@ -1,8 +1,11 @@
-
 {% extends "adminpage.html" %}
 
 {% block content %}
 
 
-<h1>Registartions</h1>
+<h1>Registration</h1>
+{% for registration in registrations %}
+{{registration}}
+
+{% endfor %}
 {% endblock %}

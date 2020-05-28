@@ -1,11 +1,11 @@
 from flask_wtf  import FlaskForm
 from wtforms import *
 from wtforms.validators import DataRequired, Length, Email
+from fbproject.models import User
 	
 class EventForm(FlaskForm):
 	name = StringField("Eventname", validators = [DataRequired()])
 	courses= StringField('Courses',validators = [DataRequired()], render_kw = {"placeholder" : "Example: Python, C, C++"})
-	poster = FileField("Please Add Poster for the Event",validators = [DataRequired()] )
 	regopen=DateField("Regopen",validators = [DataRequired()], render_kw = {"placeholder" : "dd/mm/yyyy"})
 	regclose=DateField("Regclose",validators = [DataRequired()], render_kw = {"placeholder" : "dd/mm/yyyy"})
 	description=TextAreaField("Description",validators = [DataRequired()],render_kw = { 'cols' :80, 'rows' : 10})
@@ -45,11 +45,28 @@ class LogInForm(FlaskForm):
 
 
 
-class ForgotPasswordForm(FlaskForm):
+class RequestResetForm(FlaskForm):
 	email= StringField("Email", validators = [DataRequired(),Email()])
-	submit = SubmitField("Forgot Password")
+	submit = SubmitField("request reset Password")
+
+
+	def validate_email(self,email):
+		user=User.query.filter_by(email=email.data).first()
+		if user:
+			raise ValidationError('that email is taken please take a diff one')
+		if user is None:
+			raise ValidationError('there is no account with that email.you must register first')
+
+class ResetPasswordForm(FlaskForm):	
+    password=PasswordField("NewPassword",validators=[DataRequired()])
+    confirmpassword=PasswordField("ConfirmPassword",validators=[DataRequired()])
+    submit = SubmitField("Reset Password")
+
+
+
 	
 class AddStaffForm(FlaskForm):
+    username=StringField("Username", validators = [DataRequired()])
     name = StringField("Name", validators = [DataRequired()])
     email= StringField("Email", validators = [DataRequired()])
     password= PasswordField("Password",validators=[DataRequired()])

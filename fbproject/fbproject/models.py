@@ -1,4 +1,5 @@
-from fbproject import db, login_manager
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from fbproject import db, login_manager,app
 from flask_login import UserMixin
 
 @login_manager.user_loader
@@ -9,7 +10,7 @@ class Event(db.Model):
 	id = db.Column(db.Integer(), primary_key = True)
 	name = db.Column(db.String())
 	courses = db.Column(db.String())
-	# poster = db.Column(db.BLOB())
+	
 	description = db.Column(db.Text())
 	regopen = db.Column(db.DateTime())
 	regclose = db.Column(db.DateTime()) 
@@ -24,9 +25,24 @@ class User(db.Model, UserMixin):
 	username=db.Column(db.String())
 	password=db.Column(db.String())
 	name = db.Column(db.String())
+	email=db.Column(db.String())
+	
 
 	def __str__(self):
 		return self.username
+	def get_reset_token(self, expires_sec=1800):
+		s=Serializer(app.config['SECRET_KEY'],expires_sec)
+		return s.dumps({'user_id':self.id}).decode('utf-8')
+
+	@staticmethod
+	def verify_reset_token(token):
+		s=Serializer(app.config['SECRET_KEY'])
+		try:
+			user_id=s.loads(token)['user_id']
+		except:
+			return None
+		return User.query.get(user_id)
+
 
 
 class Registration(db.Model):

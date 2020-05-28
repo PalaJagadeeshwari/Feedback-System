@@ -31,7 +31,7 @@
 
 
 
-
+<a href="{{url_for('eventcreation')}}"style = "float:right; font-size:2rem; margin:20px;">Create an Event</a>
 <table id="example" class="display" style="width:100%">
         <thead>
             <tr>
@@ -51,10 +51,8 @@
                 
                   <td id= "lastrow">
                   <a href="/admin/{{event.id}}/edit" >Edit </a>
+                  <a href="/admin/{{event.id}}/delete" >Delete </a>
                   
-                  <form action="{{url_for('delete')}}" method="POST">
-                  <button value={{event.id}} name="delete">Delete</button>
-                  </form>
                 </td>
 
 

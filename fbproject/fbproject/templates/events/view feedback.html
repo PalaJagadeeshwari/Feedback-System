@@ -1,8 +1,11 @@
-
 {% extends "adminpage.html" %}
 
 {% block content %}
 
 
-<h1>feedback submissions</h1>
+<h1>Feedback accquired</h1>
+{% for feedback in feedbacks %}
+{{feedback}}
+
+{% endfor %}
 {% endblock %}
