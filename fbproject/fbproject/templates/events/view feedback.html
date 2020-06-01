@@ -4,12 +4,37 @@
 
 
 <h1>Feedback accquired</h1>
-{% for feedback in feedbacks %}
-{{feedback}}
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+</head>
+<body>
+<table style="width:100%">
+	<thead>
+		<tr>
+			<th>rollno</th>
+			<th>msg</th>
+			<th>Email</th>
+			
+		</tr>		
+	</thead>
+	<
+    <tbody>
+		{% for feedback in feedbacks%}
+			<tr>
+				<td>{{feedback.by}}</td>
+				<td>{{feedback.msg}}</td>
+				<td>{{feedback.email}}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
 
-{% endfor %}
-<<<<<<< HEAD
 {% endblock %}
-=======
-{% endblock %}
->>>>>>> 28a5774011602f298fca6b9fa372023f7a86ef9c
+
+
+
+
+

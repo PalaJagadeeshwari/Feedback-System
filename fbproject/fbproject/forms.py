@@ -1,7 +1,7 @@
 from flask_wtf  import FlaskForm
 from wtforms import *
 from wtforms.validators import DataRequired, Length, Email
-from fbproject.models import User
+from fbproject.models import User, Event
 	
 class EventForm(FlaskForm):
 	name = StringField("Eventname", validators = [DataRequired()])
@@ -15,11 +15,11 @@ class EventForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
+	# choices = Event.query.filter_by(id = self.id).first().course.split()
 	rollno = StringField("Roll No.", validators=[DataRequired()])
 	name = StringField("Name", validators = [DataRequired(), Length(min=3, max=50)])
 	email = StringField("Email", validators = [DataRequired(), Email()])
-	eventname=StringField("Eventname", validators = [DataRequired()])
-	coursename = StringField("Coursename", validators = [DataRequired()])
+	coursename = SelectMultipleField("Coursename", validators = [DataRequired()])
 	phno=IntegerField("Phno",validators=[DataRequired()])
 	colleges = ["AEC -- Aditya Engineering College", "ACET -- Aditya College of Engineering and Technology", "AAA -- Sai Aditya Engineering College" ]
 	college = SelectField("College: ", choices = colleges)
@@ -32,15 +32,20 @@ class RegistrationForm(FlaskForm):
 	submit = SubmitField("Register")
 
 class FeedbackForm(FlaskForm):
-	by = StringField("Roll No.: ", validators = [DataRequired()], render_kw = {"placeholder" : "Enter your Roll No."})
+	by= StringField("Roll No.: ", validators = [DataRequired()], render_kw = {"placeholder" : "Enter your Roll No."})
 	email  = StringField("Email: ", validators = [DataRequired(), Email()], render_kw = {"placeholder" : "Enter your Email"})
 	msg = TextAreaField("Feedback: ", validators = [DataRequired()], render_kw = {"placeholder" : "Enter your Feedback Message...", 'cols' :80, 'rows' : 10})
+
+
 
 class LogInForm(FlaskForm):
 	username = StringField("Username", validators = [DataRequired()])
 	password = PasswordField("Password", validators = [DataRequired()])
 	remember = BooleanField("Remember me")
 	login = SubmitField("Log In")
+
+	
+	
 
 
 

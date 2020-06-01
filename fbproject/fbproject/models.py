@@ -57,7 +57,7 @@ class Registration(db.Model):
 	section=db.Column(db.String())
 	gender=db.Column(db.String())
 	event = db.Column(db.Integer(), db.ForeignKey("event.id"), nullable = False)
-
+    
 
 class Feedback(db.Model):
 	id = db.Column(db.Integer(), primary_key = True)

@@ -1,12 +1,12 @@
 import os
 import csv
 from datetime import datetime
-from fbproject.forms import (RegistrationForm, LogInForm, RequestResetForm,
+from fbproject.forms import(RegistrationForm, LogInForm, RequestResetForm,
 	EventForm, AddStaffForm, FeedbackForm, ChangePasswordForm,ResetPasswordForm)
 from flask import render_template, url_for, redirect, flash, request
 from fbproject import app,db,bcrypt,mail
 from fbproject.models import (Event, Registration, Feedback, User)
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Mail,Message
 
 
@@ -55,11 +55,14 @@ def about():
 def register(id):
 	form = RegistrationForm()
 	event = Event.query.filter_by(id = id).first()
+	form.coursename.choices = [(i, i) for i in event.courses.split(",")]
 	if request.method=="POST":
 		rollno=request.form['rollno']
 		name=request.form['name']
 		email=request.form['email']
-		coursename=request.form['coursename']
+		# coursename=request.form.coursename.data
+		coursename = form.coursename.data
+		coursename = ",".join(coursename)
 		phno=request.form['phno']
 		college=request.form['college']
 		branch=request.form['branch']
@@ -68,7 +71,7 @@ def register(id):
 		registration = Registration(event = event.id, rollno = rollno, coursename = coursename, gender = gender, phno = phno, college = college, branch = branch, section = section)		
 		db.session.add(registration)
 		db.session.commit()
-		return redirect("url_for('home')")
+		return redirect(url_for('home'))
 	return render_template("register.html", form= form, event = event)
 
 
@@ -93,6 +96,7 @@ def logout():
 
 
 @app.route("/admin/")
+@login_required
 def admin_home():
 	return render_template("admin/admin home.html")
 
@@ -129,16 +133,14 @@ def eventcreation():
 	if request.method=="POST":
 		eventname=request.form['name']
 		course=request.form['courses']
-		# poster=request.form['poster']
-		# print(poster)
 		d, m, y = list(map(int, request.form['regopen'].split("/")))
-		regopen = datetime(y, m, d).strftime("%Y/%m/%d")
+		regopen = datetime(y, m, d)
 		d, m, y = list(map(int, request.form['regclose'].split("/")))
-		regclose = datetime(y,m,d).strftime("%Y/%m/%d")
+		regclose = datetime(y,m,d)
 		description=request.form['description']
 		place=request.form['place']
 		d, m, y = list(map(int, request.form['date'].split("/")))
-		date = datetime(y,m,d).strftime("%Y/%m/%d")
+		date = datetime(y,m,d)
 		status = request.form['status']
 		print(status)
 		event = Event(name = eventname, courses = course, regopen = regopen, description = description, regclose = regclose, place = place, date = date, status = status)
@@ -162,11 +164,8 @@ def delete(id):
 
 @app.route("/admin/<int:id>/edit",methods=['GET','POST'])
 def edit(id):
-	
-	   
 	event = Event.query.filter_by(id = id).first()
 	form = EventForm(obj = event)
-<<<<<<< HEAD
 	if request.method == "POST":
 	    event.name=request.form['name']
 	    event.courses=request.form['courses']
@@ -182,8 +181,6 @@ def edit(id):
 	    db.session.commit()
 	    flash("Edited")
 	    return redirect(url_for("admin_home"))
-=======
->>>>>>> 28a5774011602f298fca6b9fa372023f7a86ef9c
 	return render_template("events/eventedit.html", form = form)
 
 @app.route("/admin/addstaff/",methods=['GET','POST'])
@@ -194,26 +191,20 @@ def addstaff():
 		name=request.form['name']
 		email=request.form['email']
 		password=bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
-		u=User(name=name,email=email,password=password)
+		u=User(name=name, username = username,email=email,password=password)
 		db.session.add(u)
 		db.session.commit()
 	return render_template("admin/add staff.html", form = form)
 
 @app.route("/admin/viewstaff/")
 def viewstaff():
-<<<<<<< HEAD
-	
-
-	return render_template("admin/viewstaff.html")
-=======
 	staff = User.query.all()
 	return render_template("admin/viewstaff.html", staff = staff)
->>>>>>> 28a5774011602f298fca6b9fa372023f7a86ef9c
 
 def send_reset_email(user):
     token=user.get_reset_token()
     msg=Message('Password Reset Request',sender="noreply@demo.com",recipients=[user.email])
-    a = url_for("reset_token", token=token, external=True)
+    a = url_for("reset_token", token=token, _external=True)
     msg.body=f'''To Reset Your Password ,visit the following link:
     {a}
     If u did not make this request simply ignore this mail and no chnage swill be made'''
@@ -223,16 +214,14 @@ def send_reset_email(user):
 @app.route("/reset_password",methods=['GET','POST'])
 def reset_request():
 	if current_user.is_authenticated:
-		return redirect(url_for('adminhome'))
+		return redirect(url_for('reset_request'))
 	form = RequestResetForm()
 	if request.method == "POST":
 		print(form.email.data)
 		user = User.query.filter_by(email = form.email.data).first()
 		if user is None:
 			flash("No Such User Exists")
- 			# print("qasas")
 		send_reset_email(user)
- 		# print("asasasasas")
 		flash('An email has sent with an instructions to reset your password','info')
 		return render_template('admin/reset_request.html',form=form)
 	return render_template("admin/reset_request.html", form = form)
@@ -240,8 +229,10 @@ def reset_request():
 
 @app.route("/reset_password/<token>",methods=['GET', 'POST'])
 def reset_token(token):
+	form=ResetPasswordForm()
 	if current_user.is_authenticated:
  		return render_template('adminhome.html')
+
 	user = User.verify_reset_token(token)
 	if user is None:
 		flash("invalid or expired token",'warning')
@@ -252,7 +243,7 @@ def reset_token(token):
 	    db.session.commit()	
 	    flash('your password has been updated now you are able to login')
 	    return redirect(url_for('login'))
-	form=ResetPasswordForm()
-	return render_template('reset_token.html',title='Reset Password',form=form)
+	
+	return render_template('admin/reset_token.html',title='Reset Password',form=form)
 
 		
